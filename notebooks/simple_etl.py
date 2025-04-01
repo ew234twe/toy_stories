@@ -5,7 +5,6 @@ import pandas as pd
 from pathlib import Path
 from typing import Generator, Any
 
-TARGET_TABLE = "aws_spot_pricing_history"
 SPOT_ADVISOR_DATA_URL = (
     r"https://spot-bid-advisor.s3.amazonaws.com/spot-advisor-data.json"
 )
@@ -72,10 +71,10 @@ from df
     return df
 
 
-def write_result(df: pd.DataFrame, prefix_path: Path, etl_ts: datetime.datetime) -> int:
+def write_result(df: pd.DataFrame, prefix_path: Path, etl_ts: datetime.datetime):
     output_folder = Path(__file__).parent / prefix_path
     output_folder.mkdir(parents=True, exist_ok=True)
-    output_path = output_folder / (etl_ts.date().isoformat() + ".csv")
+    output_path = output_folder / (etl_ts.isoformat() + ".csv")
     df.to_csv(output_path, index=False)
 
 
@@ -114,6 +113,7 @@ def main():
     extracted = extract_and_load(utc_ts)
     stats = transform(utc_ts)
     return extracted, stats
+
 
 if __name__ == "__main__":
     main()
